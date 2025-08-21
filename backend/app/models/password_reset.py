@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Index
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 
 from ..db.postgres import Base
 
@@ -14,6 +14,4 @@ class PasswordResetToken(Base):
 	used_at = Column(DateTime, nullable=True)
 	created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
-	__table_args__ = (
-		Index("ix_password_reset_tokens_token_hash", "token_hash"),
-	)
+	# No explicit Index; 'index=True' on token_hash already creates one.

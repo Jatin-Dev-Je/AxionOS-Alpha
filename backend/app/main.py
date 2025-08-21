@@ -4,8 +4,10 @@ from sqlalchemy.orm import Session
 from .db.postgres import Base, engine
 from .models import user as _user_model  # noqa: F401
 from .models import password_reset as _password_reset_model  # noqa: F401
+from .models import task as _task_model  # noqa: F401
 from .api.v1.routes.auth import router as auth_router
 from .api.v1.routes.users import router as users_router
+from .api.v1.routes.tasks import router as tasks_router
 
 
 def create_app() -> FastAPI:
@@ -32,6 +34,7 @@ def create_app() -> FastAPI:
 
 	app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
 	app.include_router(users_router, prefix="/api/v1/users", tags=["users"])
+	app.include_router(tasks_router, prefix="/api/v1/tasks", tags=["tasks"])
 
 	@app.get("/health")
 	def health():
