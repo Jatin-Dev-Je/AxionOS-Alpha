@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from .celery_app import celery_app
 from ..db.postgres import SessionLocal
 from ..models.task import Task, TaskStatus
+from ..services.llm import llm_chat
 
 
 @celery_app.task(name="axionos.execute_task")
@@ -22,12 +23,24 @@ def execute_task(task_id: int) -> None:
 
         # TODO: branch by task.type; for now implement a stub
         if task.type == "knowledge_query":
-            task.result = {
-                "answer": "This is a Celery-executed stubbed knowledge answer.",
-                "sources": [],
-            }
+            q = ""
+            if isinstance(task.payload, dict):
+                q = str(task.payload.get("q", "")).strip()
+            messages = [
+                {"role": "system", "content": "You are AxionOS Knowledge Agent. Answer concisely."},
+                {"role": "user", "content": q or "What do you know?"},
+            ]
+            answer = llm_chat(messages)
+            task.result = {"answer": answer, "sources": []}
         else:
-            task.result = {"echo": task.payload or {}}
+            if task.type == "llm_chat":
+                messages = task.payload.get("messages") if isinstance(task.payload, dict) else None
+                if not messages:
+                    messages = [{"role": "user", "content": str(task.payload)}]
+                answer = llm_chat(messages)
+                task.result = {"answer": answer}
+            else:
+                task.result = {"echo": task.payload or {}}
 
         task.status = TaskStatus.SUCCEEDED
         task.finished_at = datetime.utcnow()

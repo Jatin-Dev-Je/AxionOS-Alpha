@@ -28,3 +28,17 @@ APP_BASE_URL = os.getenv("APP_BASE_URL", "http://localhost:3000")
 # Queue / Celery
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
+# LLM Provider settings
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "stub")  # options: openai, ollama, stub
+
+# OpenAI
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+
+# Ollama
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
+
+# Timeouts
+LLM_TIMEOUT = float(os.getenv("LLM_TIMEOUT", "30"))
+
