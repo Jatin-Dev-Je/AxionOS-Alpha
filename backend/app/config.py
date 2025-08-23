@@ -42,3 +42,6 @@ OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
 # Timeouts
 LLM_TIMEOUT = float(os.getenv("LLM_TIMEOUT", "30"))
 
+# Weaviate
+WEAVIATE_URL = os.getenv("WEAVIATE_URL", "http://localhost:8080")
+
