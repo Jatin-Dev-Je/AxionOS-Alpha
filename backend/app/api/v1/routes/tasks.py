@@ -12,6 +12,7 @@ from ....db.postgres import get_db
 from ....models.task import Task, TaskStatus
 from ....core.auth import get_current_user
 from ....models.user import User
+from ....worker.tasks import execute_task
 
 
 router = APIRouter()
@@ -83,8 +84,12 @@ def create_task(
 	db.add(task)
 	db.commit()
 	db.refresh(task)
-	# Schedule background execution (in-process stub; replace with Celery later)
-	background.add_task(_execute_task, db, task.id)
+	# Enqueue Celery task
+	try:
+		execute_task.delay(task.id)
+	except Exception:
+		# Fallback to in-process if Celery not running
+		background.add_task(_execute_task, db, task.id)
 	return task
 
 

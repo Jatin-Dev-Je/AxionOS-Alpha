@@ -25,3 +25,6 @@ MIN_PASSWORD_LENGTH = int(os.getenv("MIN_PASSWORD_LENGTH", "8"))
 # App base URL (used to build password reset links)
 APP_BASE_URL = os.getenv("APP_BASE_URL", "http://localhost:3000")
 
+# Queue / Celery
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+
